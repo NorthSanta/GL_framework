@@ -33,7 +33,7 @@ struct Particle
 	glm::vec3 velocity;
 	float lifetime;
 	glm::vec3 antPos;
-	glm::vec3 antPosAnt;
+	glm::vec3 nextPos;
 };
 
 
@@ -110,7 +110,7 @@ void PhysicsInit() {
 			partVerts[i * 3 + 2] = totalParts[i].pos.z;
 
 			totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
-			totalParts[i].velocity.y = ((float)rand() / RAND_MAX) *10;
+			totalParts[i].velocity.y = ((float)rand() / RAND_MAX) *5 + 6;
 			totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 
 			totalParts[i].lifetime = life;
@@ -164,7 +164,7 @@ void PhysicsUpdate(float dt) {
 						partVerts[i * 3 + 2] = totalParts[i].pos.z;
 
 						totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
-						totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 10;
+						totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5+6;
 						totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 
 						totalParts[i].lifetime = life;
@@ -178,15 +178,18 @@ void PhysicsUpdate(float dt) {
 
 				totalParts[i].pos.x += (dt * totalParts[i].velocity.x) + (0.5 * (gravity * (dt * dt)));
 				totalParts[i].velocity.x += (accX*dt);
+				if (totalParts[i].pos.y > 0.25)
+				{
 				totalParts[i].pos.y += (dt * totalParts[i].velocity.y) + (0.5 * (gravity * (dt * dt)));
 				totalParts[i].velocity.y += (gravity*dt);
+				}
 				totalParts[i].pos.z += (dt * totalParts[i].velocity.z) + (0.5 * (gravity * (dt * dt)));
 				totalParts[i].velocity.z += (accZ*dt);
 				partVerts[i * 3 + 0] = totalParts[i].pos.x;
 				partVerts[i * 3 + 1] = totalParts[i].pos.y;
 				partVerts[i * 3 + 2] = totalParts[i].pos.z;
 
-				if (totalParts[i].pos.y <= 0.025 || totalParts[i].pos.y >= 10) {
+				if (totalParts[i].pos.y <= 0.25 || totalParts[i].pos.y >= 10) {
 					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
 				}
 				if (totalParts[i].pos.x <= -5 || totalParts[i].pos.x >= 5) {
@@ -294,7 +297,14 @@ void PhysicsUpdate(float dt) {
 
 						totalParts[i].lifetime = life;
 
-						totalParts[i].antPos = glm::vec3(0, 2+(totalParts[i].velocity.y*dt),0);
+						totalParts[i].antPos.x = totalParts[i].pos.x - totalParts[i].velocity.x;
+						totalParts[i].antPos.y = totalParts[i].pos.y - totalParts[i].velocity.y;
+						totalParts[i].antPos.z = totalParts[i].pos.z - totalParts[i].velocity.z;
+
+						totalParts[i].nextPos.x = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x + (dt*dt);
+						totalParts[i].nextPos.y = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x + gravity* (dt*dt);
+						totalParts[i].nextPos.z = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x + (dt*dt);
+
 						
 					
 				}
@@ -302,18 +312,20 @@ void PhysicsUpdate(float dt) {
 				for (int i = 0; i < part; ++i) {
 
 					glm::vec3 temp = totalParts[i].pos;
-					totalParts[i].pos.x += (totalParts[i].pos.x - totalParts[i].antPos.x) +(dt*dt);
-					totalParts[i].pos.y +=  (totalParts[i].pos.y - totalParts[i].antPos.y) + (gravity)* (dt*dt);
-					totalParts[i].pos.z += (totalParts[i].pos.z - totalParts[i].antPos.z) + (dt*dt);
+					totalParts[i].nextPos.x = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x +(dt*dt);
+					totalParts[i].nextPos.y = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x + gravity* (dt*dt);
+					totalParts[i].nextPos.z = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x + (dt*dt);
 
-
+					totalParts[i].pos.x = totalParts[i].nextPos.x;
+					totalParts[i].pos.y = totalParts[i].nextPos.y;
+					totalParts[i].pos.z = totalParts[i].nextPos.z;
 					
 					totalParts[i].antPos = temp;
 
 
-					partVerts[i * 3 + 0] = totalParts[i].pos.x;
-					partVerts[i * 3 + 1] = totalParts[i].pos.y;
-					partVerts[i * 3 + 2] = totalParts[i].pos.z;
+					partVerts[i * 3 + 0] = totalParts[i].nextPos.x;
+					partVerts[i * 3 + 1] = totalParts[i].nextPos.y;
+					partVerts[i * 3 + 2] = totalParts[i].nextPos.z;
 				}
 			}
 		}

@@ -36,7 +36,6 @@ struct Particle
 	glm::vec3 nextPos;
 };
 
-
 namespace LilSpheres {
 	extern const int maxParticles;
 	extern void setupParticles(int numTotalParticles, float radius = 0.05f);
@@ -160,7 +159,10 @@ void PhysicsInit() {
 				totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 
 				totalParts[i].lifetime = life;
-				totalParts[i].antPos = glm::vec3(0, 2 - (totalParts[i].velocity.y*(1000 / 30)), 0);
+				totalParts[i].antPos = glm::vec3(totalParts[i].pos.x , totalParts[i].pos.y - 0.1, totalParts[i].pos.z);
+				//totalParts[i].antPos.x = totalParts[i].pos.x - totalParts[i].velocity.x;
+				//totalParts[i].antPos.y = totalParts[i].pos.y - totalParts[i].velocity.y;
+				//totalParts[i].antPos.z = totalParts[i].pos.z - totalParts[i].velocity.z;
 			}
 
 		}
@@ -189,7 +191,7 @@ void PhysicsInit() {
 void PhysicsUpdate(float dt) {
 	//TODO
 	var1 = 0;
-	var2 = emm;
+	var2 = part-10;
 
 	if (part >= emm) {
 		part = emm;
@@ -339,37 +341,33 @@ void PhysicsUpdate(float dt) {
 				totalParts[i].lifetime -= dt;
 				if (totalParts[i].lifetime <= 0) {
 					
-						totalParts[i].pos.x = 0;
-						totalParts[i].pos.y = 2;
-						totalParts[i].pos.z = 0;
-						partVerts[i * 3 + 0] = totalParts[i].pos.x;
-						partVerts[i * 3 + 1] = totalParts[i].pos.y;
-						partVerts[i * 3 + 2] = totalParts[i].pos.z;
+					totalParts[i].pos.x = 0;
+					totalParts[i].pos.y = 2;
+					totalParts[i].pos.z = 0;
+					partVerts[i * 3 + 0] = totalParts[i].pos.x;
+					partVerts[i * 3 + 1] = totalParts[i].pos.y;
+					partVerts[i * 3 + 2] = totalParts[i].pos.z;
 
-						totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
-						totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5+6;
-						totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
+					totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
+					totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5 + 6;
+					totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 
-						totalParts[i].lifetime = life;
+					totalParts[i].lifetime = life;
+					totalParts[i].antPos = glm::vec3(totalParts[i].pos.x, totalParts[i].pos.y - 0.1, totalParts[i].pos.z);
 
-						totalParts[i].antPos.x = totalParts[i].pos.x - totalParts[i].velocity.x;
-						totalParts[i].antPos.y = totalParts[i].pos.y - totalParts[i].velocity.y;
-						totalParts[i].antPos.z = totalParts[i].pos.z - totalParts[i].velocity.z;
 
-						totalParts[i].nextPos.x = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x + (dt*dt);
-						totalParts[i].nextPos.y = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x + gravity* (dt*dt);
-						totalParts[i].nextPos.z = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x + (dt*dt);
-
+						//finalVerts[i * 3 + 0] = part verts[ewkhfeufh] + (part verts[asodihehdf] - antPartVerts[wiodjoejf] + (xForce[i] /mass) *dt*dt
 						
-					
 				}
 
 				for (int i = 0; i < part; ++i) {
 
 					glm::vec3 temp = totalParts[i].pos;
-					totalParts[i].nextPos.x = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x +(dt*dt);
-					totalParts[i].nextPos.y = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x + gravity* (dt*dt);
-					totalParts[i].nextPos.z = totalParts[i].pos.x + totalParts[i].pos.x - totalParts[i].antPos.x + (dt*dt);
+											//totalParts[i].pos.x
+					//finalVerts[i * 3 + 0] = partVerts[i * 3 + 0] + (partVerts[i * 3 + 0] - antPartVerts[wiodjoejf] + (xForce[i] / mass) *dt*dt
+					totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x )+ (dt*dt);
+					totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + gravity* (dt*dt);
+					totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (dt*dt);
 
 					totalParts[i].pos.x = totalParts[i].nextPos.x;
 					totalParts[i].pos.y = totalParts[i].nextPos.y;
@@ -378,14 +376,14 @@ void PhysicsUpdate(float dt) {
 					totalParts[i].antPos = temp;
 
 
-					partVerts[i * 3 + 0] = totalParts[i].nextPos.x;
-					partVerts[i * 3 + 1] = totalParts[i].nextPos.y;
-					partVerts[i * 3 + 2] = totalParts[i].nextPos.z;
+					partVerts[i * 3 + 0] = totalParts[i].pos.x;
+					partVerts[i * 3 + 1] = totalParts[i].pos.y;
+					partVerts[i * 3 + 2] = totalParts[i].pos.z;
 				}
 			}
 		}
 		
-		LilSpheres::updateParticles(0, emm, partVerts);
+		LilSpheres::updateParticles(0, part, partVerts);
 	}
 }
 void PhysicsCleanup() {

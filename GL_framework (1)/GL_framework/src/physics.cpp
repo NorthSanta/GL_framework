@@ -14,8 +14,8 @@ float elastic = 0;
 float friction = 0;
 float sphereRad = 1;
 int fontOrWaterfall;
-int changed;
-
+int changedFont;
+int changedSolver;
 const float gravity = -9.81;
  float accX = 0;
  float accZ = 0;
@@ -65,12 +65,19 @@ void GUI() {
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		//TODO
 		ImGui::Separator();
+		ImGui::Text("Solver Methods:");
+		//Euler & Verlet Buttons
+		ImGui::RadioButton("Euler Solver", &solver, 0); ImGui::SameLine();
+		ImGui::RadioButton("Verlet Solver", &solver, 1);
+
+		ImGui::Text("Emitter Type:");
+		//Font or Waterfall	
+		ImGui::RadioButton("Font", &fontOrWaterfall, 0); ImGui::SameLine();
+		ImGui::RadioButton("Waterfall", &fontOrWaterfall, 1);
 		//Emission & life Sliders
 		ImGui::SliderInt("Emission Rate", &emm, 100, 10000);
 		ImGui::SliderFloat("Life Expectancy", &life, 1, 5);
-		//Euler & Verlet Buttons
-		ImGui::RadioButton("Euler Solver", &solver,0); ImGui::SameLine();
-		ImGui::RadioButton("Verlet Solver", &solver,1);
+		
 		//Elastic & Friccion Inputs
 		ImGui::SliderFloat("Elastic Coeficient", &elastic, 0, 1);
 		//ImGui::InputFloat("Elastic Coeficient", &elastic);
@@ -78,9 +85,7 @@ void GUI() {
 		//Sphere Position & radius
 		ImGui::SliderFloat("Sphere Radius", &sphereRad, 0, 5);
 		//ImGui::InputFloat("Sphere Radius", &sphereRad);
-		//Font or Waterfall	
-		ImGui::RadioButton("Font", &fontOrWaterfall, 0); ImGui::SameLine();
-		ImGui::RadioButton("Waterfall", &fontOrWaterfall, 1);
+		
 	}
 
 	// ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
@@ -99,44 +104,87 @@ void PhysicsInit() {
 	totalParts = new Particle[LilSpheres::maxParticles];
 	LilSpheres::setupParticles(LilSpheres::maxParticles);
 	partVerts = new float[LilSpheres::maxParticles * 3];
-	if (fontOrWaterfall == 0) {
-		for (int i = 0; i < LilSpheres::maxParticles; ++i) {
-			
-			totalParts[i].pos.x = 0;
-			totalParts[i].pos.y= 2;
-			totalParts[i].pos.z = 0;
-			partVerts[i * 3 + 0] = totalParts[i].pos.x;
-			partVerts[i * 3 + 1] = totalParts[i].pos.y;
-			partVerts[i * 3 + 2] = totalParts[i].pos.z;
+	if (solver == 0) {
+		if (fontOrWaterfall == 0) {
+			for (int i = 0; i < LilSpheres::maxParticles; ++i) {
 
-			totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
-			totalParts[i].velocity.y = ((float)rand() / RAND_MAX) *5 + 6;
-			totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
+				totalParts[i].pos.x = 0;
+				totalParts[i].pos.y = 2;
+				totalParts[i].pos.z = 0;
+				partVerts[i * 3 + 0] = totalParts[i].pos.x;
+				partVerts[i * 3 + 1] = totalParts[i].pos.y;
+				partVerts[i * 3 + 2] = totalParts[i].pos.z;
 
-			totalParts[i].lifetime = life;
+				totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
+				totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5 + 6;
+				totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
+
+				totalParts[i].lifetime = life;
+
+			}
 
 		}
-		
-	}
-	else if(fontOrWaterfall == 1){
-		
-		for (int i = 0; i < LilSpheres::maxParticles; ++i) {
-			totalParts[i].pos = glm::vec3(5, 5, ((float)rand() / RAND_MAX) *3.f);
-			partVerts[i * 3 + 0] = totalParts[i].pos.x;
-			partVerts[i * 3 + 1] = totalParts[i].pos.y;
-			partVerts[i * 3 + 2] = totalParts[i].pos.z;
+		else if (fontOrWaterfall == 1) {
 
-			totalParts[i].velocity.x = -1;
-			totalParts[i].velocity.y = ((float)rand() / RAND_MAX);
-			totalParts[i].velocity.z = 0;
-			
+			for (int i = 0; i < LilSpheres::maxParticles; ++i) {
+				totalParts[i].pos = glm::vec3(5, 5, ((float)rand() / RAND_MAX) *3.f);
+				partVerts[i * 3 + 0] = totalParts[i].pos.x;
+				partVerts[i * 3 + 1] = totalParts[i].pos.y;
+				partVerts[i * 3 + 2] = totalParts[i].pos.z;
 
-			totalParts[i].lifetime = life;
+				totalParts[i].velocity.x = -1;
+				totalParts[i].velocity.y = ((float)rand() / RAND_MAX);
+				totalParts[i].velocity.z = 0;
+
+
+				totalParts[i].lifetime = life;
+			}
+			LilSpheres::updateParticles(0, LilSpheres::maxParticles, partVerts);
 		}
-		LilSpheres::updateParticles(0, LilSpheres::maxParticles, partVerts);
+		changedFont = fontOrWaterfall;
 	}
-	changed = fontOrWaterfall;
-	
+	else if (solver == 1)
+	{
+		if (fontOrWaterfall == 0) {
+			for (int i = 0; i < LilSpheres::maxParticles; ++i) {
+
+				totalParts[i].pos.x = 0;
+				totalParts[i].pos.y = 2;
+				totalParts[i].pos.z = 0;
+				partVerts[i * 3 + 0] = totalParts[i].pos.x;
+				partVerts[i * 3 + 1] = totalParts[i].pos.y;
+				partVerts[i * 3 + 2] = totalParts[i].pos.z;
+
+				totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
+				totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5 + 6;
+				totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
+
+				totalParts[i].lifetime = life;
+				totalParts[i].antPos = glm::vec3(0, 2 - (totalParts[i].velocity.y*(1000 / 30)), 0);
+			}
+
+		}
+		else if (fontOrWaterfall == 1) {
+
+			for (int i = 0; i < LilSpheres::maxParticles; ++i) {
+				totalParts[i].pos = glm::vec3(5, 5, ((float)rand() / RAND_MAX) *3.f);
+				partVerts[i * 3 + 0] = totalParts[i].pos.x;
+				partVerts[i * 3 + 1] = totalParts[i].pos.y;
+				partVerts[i * 3 + 2] = totalParts[i].pos.z;
+
+				totalParts[i].velocity.x = -1;
+				totalParts[i].velocity.y = ((float)rand() / RAND_MAX);
+				totalParts[i].velocity.z = 0;
+
+
+				totalParts[i].lifetime = life;
+				totalParts[i].antPos = glm::vec3(0, 2 - (totalParts[i].velocity.y*(1000 / 30)), 0);
+			}
+
+		}
+		changedFont = fontOrWaterfall;
+	}
+	changedSolver = solver;
 }
 void PhysicsUpdate(float dt) {
 	//TODO
@@ -146,11 +194,15 @@ void PhysicsUpdate(float dt) {
 	if (part >= emm) {
 		part = emm;
 	}
-
-	if (fontOrWaterfall != changed) {
+	if (changedSolver != solver) {
 		PhysicsInit();
 	}
+	if (fontOrWaterfall != changedFont) {
+		PhysicsInit();
+	}
+	//EulerSolver
 	if (solver == 0) {
+		//FONT
 		if (fontOrWaterfall == 0) {
 			for (int i = 0; i < part; ++i) {
 				totalParts[i].lifetime -= dt;
@@ -223,6 +275,7 @@ void PhysicsUpdate(float dt) {
 			printf("%d \n", part);
 			LilSpheres::updateParticles(0, part, partVerts);
 		}
+		//Waterfall
 		else if (fontOrWaterfall == 1) {
 			for (int i = 0; i < part; ++i) {
 				totalParts[i].lifetime -= dt;
@@ -278,7 +331,9 @@ void PhysicsUpdate(float dt) {
 			LilSpheres::updateParticles(0, emm, partVerts);
 		}
 	}
+	//Verlet
 	else if (solver == 1) {
+		//Font
 		if (fontOrWaterfall == 0) {
 			for (int i = 0; i < part; ++i) {
 				totalParts[i].lifetime -= dt;
@@ -292,7 +347,7 @@ void PhysicsUpdate(float dt) {
 						partVerts[i * 3 + 2] = totalParts[i].pos.z;
 
 						totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
-						totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 10;
+						totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5+6;
 						totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 
 						totalParts[i].lifetime = life;

@@ -203,8 +203,13 @@ void PhysicsInit() {
 void PhysicsUpdate(float dt) {
 	//TODO
 	var1 = 0;
-	var2 = part -10;
-	printf("%f\n", (0.2 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.3 - 0.1)))));
+	if (solver == 0) {
+		var2 = part - 10;
+	}
+	else {
+		var2 = part - 20;
+	}
+	printf("%d\n", part);
 	if (part >= emm) {
 		part = emm;
 	}

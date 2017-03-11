@@ -382,11 +382,25 @@ void PhysicsUpdate(float dt) {
 				totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (totalParts[i].Forces.x / mass)*(dt*dt);
 				totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (totalParts[i].Forces.y/mass)*(dt*dt);
 				totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (totalParts[i].Forces.z / mass)*(dt*dt);
-
-
-
+				if (totalParts[i].pos.y <= 0.25 || totalParts[i].pos.y >= 10) {
+					totalParts[i].pos.y = -totalParts[i].pos.y*elastic;
+				}
+				if (totalParts[i].pos.x <= -5 || totalParts[i].pos.x >= 5) {
+					totalParts[i].pos.x = -totalParts[i].pos.x;
+				}
+				if (totalParts[i].pos.z <= -5 || totalParts[i].pos.z >= 5) {
+					totalParts[i].pos.z = -totalParts[i].pos.z;
+				}
+/*
+				if (glm::distance(glm::vec3(0.f, 1.f, 0.f), totalParts[i].pos) - sphereRad <= 0) {
+					totalParts[i].Forces.y = -totalParts[i].Forces.y*elastic;
+					totalParts[i].Forces.x += totalParts[i].Forces.x;
+					totalParts[i].Forces.z += totalParts[i].Forces.z;
+				}
+				*/
+				
 				totalParts[i].antPos = temp;
-
+				
 
 				partVerts[i * 3 + 0] = totalParts[i].pos.x;
 				partVerts[i * 3 + 1] = totalParts[i].pos.y;

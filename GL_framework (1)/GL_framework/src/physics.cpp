@@ -103,10 +103,10 @@ void GUI() {
 		ImGui::SliderFloat("Life Expectancy", &life, 1, 5);
 		ImGui::Separator();
 		//Elastic & Friccion Inputs
-		ImGui::Text("Elastic & Friction Coeficients:");
+		ImGui::Text("Elastic Coeficient:");
 		ImGui::SliderFloat("Elastic", &elastic, 0, 1);
 		//ImGui::InputFloat("Elastic Coeficient", &elastic);
-		ImGui::SliderFloat("Friction", &friction,0,1);
+		//ImGui::SliderFloat("Friction", &friction,0,1);
 		//Sphere Position & radius
 		ImGui::Separator();
 		ImGui::Text("Sphere Parameters:");
@@ -116,11 +116,11 @@ void GUI() {
 		ImGui::InputFloat("Sphere PositionZ", &sphereZ);
 		//capsule Position & radius
 		ImGui::Separator();
-		ImGui::Text("Capsule Parameters:");
+		/*ImGui::Text("Capsule Parameters:");
 		ImGui::SliderFloat("Capsule Radius", &capsuleRad, 0, 5);
 		ImGui::InputFloat("Capsule PositionX", &capsuleX);
 		ImGui::InputFloat("Capsule PositionY", &capsuleY);
-		ImGui::InputFloat("Capsule PositionZ", &capsuleZ);
+		ImGui::InputFloat("Capsule PositionZ", &capsuleZ);*/
 		
 		
 		
@@ -299,9 +299,26 @@ void PhysicsUpdate(float dt) {
 				}
 
 				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad -0.05 <= 0) {
-					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
-					totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;
-					totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
+					if (totalParts[i].pos.z > sphereZ) {
+						//totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
+						//printf("MesGRAN");
+						totalParts[i].velocity.z = -totalParts[i].velocity.x*elastic;
+					}
+					else if (totalParts[i].pos.z <= sphereZ) {
+						//totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
+						//printf("MesPetit");
+						totalParts[i].velocity.z = totalParts[i].velocity.x*elastic;
+					}
+					if (totalParts[i].pos.x > sphereX) {
+						totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
+						totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;
+						//totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
+					}
+					else if (totalParts[i].pos.x <= sphereX) {
+						totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
+						//totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;
+						//totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
+					}
 				}
 			}
 
@@ -436,6 +453,7 @@ void PhysicsUpdate(float dt) {
 				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad -0.05 <= 0) {
 					totalParts[i].pos.y -= (totalParts[i].pos.y - temp.y)*elastic;
 					temp.y += (temp.y - totalParts[i].antPos.y);
+					
 					totalParts[i].pos.x -= (totalParts[i].pos.x - temp.x)*elastic;
 					temp.x += (temp.x - totalParts[i].antPos.x);
 					totalParts[i].pos.z -= (totalParts[i].pos.z - temp.z)*elastic;
@@ -497,6 +515,7 @@ void PhysicsUpdate(float dt) {
 				}
 
 				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad - 0.05 <= 0) {
+
 					totalParts[i].pos.y -= (totalParts[i].pos.y - temp.y)*elastic;
 					temp.y += (temp.y - totalParts[i].antPos.y);
 					totalParts[i].pos.x -= (totalParts[i].pos.x - temp.x)*elastic;

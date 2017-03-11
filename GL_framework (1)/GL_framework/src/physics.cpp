@@ -286,9 +286,6 @@ void PhysicsUpdate(float dt) {
 			for (int i = 0; i < part; ++i) {
 				totalParts[i].lifetime -= dt;
 				if (totalParts[i].lifetime <= 0) {
-
-					if (fontOrWaterfall == 1)
-					{
 						totalParts[i].pos = glm::vec3(5, 5, ((float)rand() / RAND_MAX) *3.f);
 						partVerts[i * 3 + 0] = totalParts[i].pos.x;
 						partVerts[i * 3 + 1] = totalParts[i].pos.y;
@@ -300,7 +297,6 @@ void PhysicsUpdate(float dt) {
 
 
 						totalParts[i].lifetime = life;
-					}
 				}
 			}
 
@@ -381,11 +377,50 @@ void PhysicsUpdate(float dt) {
 				partVerts[i * 3 + 1] = totalParts[i].pos.y;
 				partVerts[i * 3 + 2] = totalParts[i].pos.z;
 			}
+			part += 10;
+			LilSpheres::updateParticles(0, part, partVerts);
+		}
+		//Waterfall
+		else if (fontOrWaterfall == 1) {
+			for (int i = 0; i < part; ++i) {
+				totalParts[i].lifetime -= dt;
+				if (totalParts[i].lifetime <= 0) {
+					totalParts[i].pos = glm::vec3(5, 5, ((float)rand() / RAND_MAX) *3.f);
+					partVerts[i * 3 + 0] = totalParts[i].pos.x;
+					partVerts[i * 3 + 1] = totalParts[i].pos.y;
+					partVerts[i * 3 + 2] = totalParts[i].pos.z;
+
+					totalParts[i].antPos = glm::vec3(totalParts[i].pos.x, totalParts[i].pos.y - 0.3, totalParts[i].pos.z);
+
+					totalParts[i].velocity.x = ((float)rand() / RAND_MAX) *-2 - 0.25;
+					totalParts[i].velocity.y = ((float)rand() / RAND_MAX);
+					totalParts[i].velocity.z = 0;
+
+					totalParts[i].lifetime = life;
+				}
+			}
+			for (int i = 0; i < part; ++i) {
+
+				glm::vec3 temp = totalParts[i].pos;
+
+
+				totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (fx / mass)*(dt*dt);
+				totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (gravity)*(dt*dt);
+				totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (fz / mass)*(dt*dt);
+
+				totalParts[i].antPos = temp;
+
+				partVerts[i * 3 + 0] = totalParts[i].pos.x;
+				partVerts[i * 3 + 1] = totalParts[i].pos.y;
+				partVerts[i * 3 + 2] = totalParts[i].pos.z;
+			}
 		}
 		part += 10;
-		LilSpheres::updateParticles(0, part, partVerts);
+		LilSpheres::updateParticles(0, emm, partVerts);
 	}
-}
+	}
+	
+	
 void PhysicsCleanup() {
 	//TODO
 	LilSpheres::cleanupParticles();

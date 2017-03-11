@@ -390,11 +390,12 @@ void PhysicsUpdate(float dt) {
 					partVerts[i * 3 + 1] = totalParts[i].pos.y;
 					partVerts[i * 3 + 2] = totalParts[i].pos.z;
 
-					totalParts[i].antPos = glm::vec3(totalParts[i].pos.x, totalParts[i].pos.y - 0.3, totalParts[i].pos.z);
+					totalParts[i].antPos = glm::vec3(totalParts[i].pos.x +0.05, totalParts[i].pos.y , totalParts[i].pos.z);
 
 					totalParts[i].velocity.x = ((float)rand() / RAND_MAX) *-2 - 0.25;
 					totalParts[i].velocity.y = ((float)rand() / RAND_MAX);
 					totalParts[i].velocity.z = 0;
+					fx = -0.2;
 
 					totalParts[i].lifetime = life;
 				}

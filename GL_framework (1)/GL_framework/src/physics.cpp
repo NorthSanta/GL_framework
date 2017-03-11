@@ -354,10 +354,27 @@ void PhysicsUpdate(float dt) {
 					totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
 				}
 				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad -0.05 <= 0) {
+					if (totalParts[i].pos.z > sphereZ) {
+						//totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
+						//printf("MesGRAN");
+						totalParts[i].velocity.z = -totalParts[i].velocity.x*elastic;
+					}
+					else if (totalParts[i].pos.z <= sphereZ) {
+						//totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
+						//printf("MesPetit");
+						totalParts[i].velocity.z = totalParts[i].velocity.x*elastic;
+					}
+					if (totalParts[i].pos.x > sphereX) {
+						totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
+						totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;
+						//totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
+					}
+					else if (totalParts[i].pos.x <= sphereX) {
+						totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
+						//totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;
+						//totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
+					}
 					
-					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
-					totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;;
-					totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;;
 				}
 
 

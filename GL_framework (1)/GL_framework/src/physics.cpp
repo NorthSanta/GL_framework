@@ -38,7 +38,7 @@ struct Particle
 	glm::vec3 velocity;
 	float lifetime;
 	glm::vec3 antPos;
-	glm::vec3 nextPos;
+	glm::vec3 Forces;
 };
 
 
@@ -395,7 +395,9 @@ void PhysicsUpdate(float dt) {
 					totalParts[i].velocity.x = ((float)rand() / RAND_MAX) *-2 - 0.25;
 					totalParts[i].velocity.y = ((float)rand() / RAND_MAX);
 					totalParts[i].velocity.z = 0;
-					fx = -0.2;
+					totalParts[i].Forces.x = -0.2;
+					totalParts[i].Forces.y = -9.81;
+					totalParts[i].Forces.z = -0.2;
 
 					totalParts[i].lifetime = life;
 				}

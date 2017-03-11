@@ -163,7 +163,8 @@ void PhysicsInit() {
 				totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 				totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5 + 6;
 				totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
-
+				fx = ((float)rand() / RAND_MAX) * 5 - 2.5f;
+				fz = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 				totalParts[i].lifetime = life;
 
 				
@@ -355,7 +356,8 @@ void PhysicsUpdate(float dt) {
 						totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 						totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5 + 6;
 						totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
-
+						fx = ((float)rand() / RAND_MAX) * 5 - 2.5f;
+						fz = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 						totalParts[i].lifetime = life;					
 				}
 

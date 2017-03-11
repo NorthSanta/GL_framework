@@ -159,7 +159,7 @@ void PhysicsInit() {
 				partVerts[i * 3 + 0] = totalParts[i].pos.x;
 				partVerts[i * 3 + 1] = totalParts[i].pos.y;
 				partVerts[i * 3 + 2] = totalParts[i].pos.z;
-				totalParts[i].antPos = glm::vec3(totalParts[i].pos.x, totalParts[i].pos.y - 0.1, totalParts[i].pos.z);
+				totalParts[i].antPos = glm::vec3(totalParts[i].pos.x, totalParts[i].pos.y - 0.3, totalParts[i].pos.z);
 				totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 				totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5 + 6;
 				totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
@@ -351,7 +351,7 @@ void PhysicsUpdate(float dt) {
 						partVerts[i * 3 + 0] = totalParts[i].pos.x;
 						partVerts[i * 3 + 1] = totalParts[i].pos.y;
 						partVerts[i * 3 + 2] = totalParts[i].pos.z;
-						totalParts[i].antPos = glm::vec3(totalParts[i].pos.x, totalParts[i].pos.y - 0.1, totalParts[i].pos.z);
+						totalParts[i].antPos = glm::vec3(totalParts[i].pos.x, totalParts[i].pos.y - 0.3, totalParts[i].pos.z);
 						totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 						totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5 + 6;
 						totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;

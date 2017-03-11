@@ -21,7 +21,7 @@ float accX = 0;
 float accZ = 0;
 
 float fx = 0;
-float fy = -1;
+float fy = -9.81;
 float fz = 0;
 float mass = 1;
 
@@ -367,7 +367,7 @@ void PhysicsUpdate(float dt) {
 
 
 				totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (fx / mass)*(dt*dt);
-				totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (fy / mass)*(dt*dt);
+				totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (gravity)*(dt*dt);
 				totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (fz / mass)*(dt*dt);
 
 

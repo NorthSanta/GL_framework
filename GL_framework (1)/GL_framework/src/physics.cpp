@@ -236,12 +236,8 @@ void PhysicsInit() {
 void PhysicsUpdate(float dt) {
 	//TODO
 	var1 = 0;
-	if (solver == 0) {
-		var2 = part - 10;
-	}
-	else {
-		var2 = part - 20;
-	}
+	var2 = part - 10;
+	
 	printf("%d\n", part);
 	if (part >= emm) {
 		part = emm;
@@ -304,25 +300,11 @@ void PhysicsUpdate(float dt) {
 
 				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad <= 0) {
 					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
-					
-					totalParts[i].velocity.x = -totalParts[i].velocity.x;
-					totalParts[i].velocity.z = -totalParts[i].velocity.z;
+					totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;
+					totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
 				}
 			}
-			/*for (int i = part; i < LilSpheres::maxParticles; ++i) {
-				totalParts[i].pos.x = 0;
-				totalParts[i].pos.y = 2;
-				totalParts[i].pos.z = 0;
-				partVerts[i * 3 + 0] = totalParts[i].pos.x;
-				partVerts[i * 3 + 1] = totalParts[i].pos.y;
-				partVerts[i * 3 + 2] = totalParts[i].pos.z;
 
-				totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
-				totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 10;
-				totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
-
-				totalParts[i].lifetime = life;
-			}*/
 			part += 10;
 			printf("%d \n", part);
 			LilSpheres::updateParticles(0, part, partVerts);
@@ -351,28 +333,28 @@ void PhysicsUpdate(float dt) {
 
 				totalParts[i].pos.x += (dt * totalParts[i].velocity.x) + (0.5 * (gravity * (dt * dt)));
 				totalParts[i].velocity.x += (accX*dt);
-				if (totalParts[i].pos.y >= 0.25) {
-					totalParts[i].pos.y += (dt * totalParts[i].velocity.y) + (0.5 * (gravity * (dt * dt)));
-					totalParts[i].velocity.y += (gravity*dt);
-				}
+				totalParts[i].pos.y += (dt * totalParts[i].velocity.y) + (0.5 * (gravity * (dt * dt)));
+				totalParts[i].velocity.y += (gravity*dt);
+				
 				totalParts[i].pos.z += (dt * totalParts[i].velocity.z) + (0.5 * (gravity * (dt * dt)));
 				totalParts[i].velocity.z += (accZ*dt);
 				partVerts[i * 3 + 0] = totalParts[i].pos.x;
 				partVerts[i * 3 + 1] = totalParts[i].pos.y;
 				partVerts[i * 3 + 2] = totalParts[i].pos.z;
 
-				if (totalParts[i].pos.y <= 0.25) {
+				if (totalParts[i].pos.y <= 0.025) {
+					
 					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
 
 					//totalParts[i].velocity.x += totalParts[i].velocity.x;
 					//totalParts[i].velocity.z += totalParts[i].velocity.z;
 				}
 				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad <= 0) {
-					//printf("XOCA");
+					
 					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
 
-					totalParts[i].velocity.x += totalParts[i].velocity.x;
-					totalParts[i].velocity.z += totalParts[i].velocity.z;
+					totalParts[i].velocity.x = -totalParts[i].velocity.x;
+					totalParts[i].velocity.z = -totalParts[i].velocity.z;
 				}
 
 
@@ -416,7 +398,7 @@ void PhysicsUpdate(float dt) {
 				totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (totalParts[i].Forces.x / mass)*(dt*dt);
 				totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (totalParts[i].Forces.y/mass)*(dt*dt);
 				totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (totalParts[i].Forces.z / mass)*(dt*dt);
-				if (totalParts[i].pos.y <= 0.25 || totalParts[i].pos.y >= 10) {
+				if (totalParts[i].pos.y <= 0) {
 					totalParts[i].pos.y = -totalParts[i].pos.y*elastic;
 				}
 				if (totalParts[i].pos.x <= -5 || totalParts[i].pos.x >= 5) {
@@ -425,13 +407,12 @@ void PhysicsUpdate(float dt) {
 				if (totalParts[i].pos.z <= -5 || totalParts[i].pos.z >= 5) {
 					totalParts[i].pos.z -= totalParts[i].pos.z - totalParts[i].antPos.z;
 				}
-/*
-				if (glm::distance(glm::vec3(0.f, 1.f, 0.f), totalParts[i].pos) - sphereRad <= 0) {
-					totalParts[i].Forces.y = -totalParts[i].Forces.y*elastic;
-					totalParts[i].Forces.x += totalParts[i].Forces.x;
-					totalParts[i].Forces.z += totalParts[i].Forces.z;
+
+				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad <= 0) {
+					totalParts[i].pos.y -= totalParts[i].pos.y - totalParts[i].antPos.y;
+					totalParts[i].pos.x -= totalParts[i].pos.x - totalParts[i].antPos.x;
+					totalParts[i].pos.z -= totalParts[i].pos.z - totalParts[i].antPos.z;
 				}
-				*/
 				
 				totalParts[i].antPos = temp;
 				
@@ -440,8 +421,8 @@ void PhysicsUpdate(float dt) {
 				partVerts[i * 3 + 1] = totalParts[i].pos.y;
 				partVerts[i * 3 + 2] = totalParts[i].pos.z;
 			}
-			part += 10;
-			LilSpheres::updateParticles(0, part, partVerts);
+			
+			
 		}
 		//Waterfall
 		else if (fontOrWaterfall == 1) {
@@ -474,7 +455,11 @@ void PhysicsUpdate(float dt) {
 				totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (totalParts[i].Forces.x / mass)*(dt*dt);
 				totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (totalParts[i].Forces.y/mass)*(dt*dt);
 				totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (totalParts[i].Forces.z / mass)*(dt*dt);
-				if (totalParts[i].pos.y <= 0.25 || totalParts[i].pos.y >= 10) {
+				if (totalParts[i].pos.y == 0) {
+					totalParts[i].pos.y = -totalParts[i].pos.y*elastic;
+					
+				}
+				else if(totalParts[i].pos.y <= 0){
 					totalParts[i].pos.y = -totalParts[i].pos.y*elastic;
 				}
 				if (totalParts[i].pos.x <= -5 || totalParts[i].pos.x >= 5) {
@@ -482,6 +467,12 @@ void PhysicsUpdate(float dt) {
 				}
 				if (totalParts[i].pos.z <= -5 || totalParts[i].pos.z >= 5) {
 					totalParts[i].pos.z -= totalParts[i].pos.z - totalParts[i].antPos.z;
+				}
+
+				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad <= 0) {
+					totalParts[i].pos.y = -totalParts[i].pos.y*elastic;
+					totalParts[i].pos.x = -totalParts[i].pos.x*elastic;
+					totalParts[i].pos.z = -totalParts[i].pos.z*elastic;
 				}
 				totalParts[i].antPos = temp;
 

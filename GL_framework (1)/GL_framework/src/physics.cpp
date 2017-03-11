@@ -298,7 +298,7 @@ void PhysicsUpdate(float dt) {
 					totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
 				}
 
-				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad <= 0) {
+				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad -0.05 <= 0) {
 					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
 					totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;
 					totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
@@ -353,7 +353,7 @@ void PhysicsUpdate(float dt) {
 				if (totalParts[i].pos.z <= -5 || totalParts[i].pos.z >= 5) {
 					totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
 				}
-				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad <= 0) {
+				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad -0.05 <= 0) {
 					
 					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
 					totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;;
@@ -363,7 +363,7 @@ void PhysicsUpdate(float dt) {
 
 			}
 			part += 10;
-			LilSpheres::updateParticles(0, emm, partVerts);
+			LilSpheres::updateParticles(0, part, partVerts);
 		}
 	}
 	//Verlet
@@ -405,13 +405,13 @@ void PhysicsUpdate(float dt) {
 					totalParts[i].pos.y = -totalParts[i].pos.y*elastic;
 				}
 				if (totalParts[i].pos.x <= -5 || totalParts[i].pos.x >= 5) {
-					totalParts[i].pos.x -= totalParts[i].pos.x - totalParts[i].antPos.x;
+					totalParts[i].pos.x -= (totalParts[i].pos.x - totalParts[i].antPos.x)*elastic;
 				}
 				if (totalParts[i].pos.z <= -5 || totalParts[i].pos.z >= 5) {
-					totalParts[i].pos.z -= totalParts[i].pos.z - totalParts[i].antPos.z;
+					totalParts[i].pos.z -= (totalParts[i].pos.z - totalParts[i].antPos.z)*elastic;
 				}
 
-				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad <= 0) {
+				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad -0.05 <= 0) {
 					totalParts[i].pos.y -= totalParts[i].pos.y - totalParts[i].antPos.y;
 					totalParts[i].pos.x -= totalParts[i].pos.x - totalParts[i].antPos.x;
 					totalParts[i].pos.z -= totalParts[i].pos.z - totalParts[i].antPos.z;
@@ -424,7 +424,8 @@ void PhysicsUpdate(float dt) {
 				partVerts[i * 3 + 1] = totalParts[i].pos.y;
 				partVerts[i * 3 + 2] = totalParts[i].pos.z;
 			}
-			
+			part += 10;
+			LilSpheres::updateParticles(0, part, partVerts);
 			
 		}
 		//Waterfall
@@ -458,24 +459,24 @@ void PhysicsUpdate(float dt) {
 				totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (totalParts[i].Forces.x / mass)*(dt*dt);
 				totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (totalParts[i].Forces.y/mass)*(dt*dt);
 				totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (totalParts[i].Forces.z / mass)*(dt*dt);
-				if (totalParts[i].pos.y == 0) {
+				
+				if(totalParts[i].pos.y < 0){
 					totalParts[i].pos.y = -totalParts[i].pos.y*elastic;
+					temp.y = -temp.y*elastic;
 					
 				}
-				else if(totalParts[i].pos.y <= 0){
-					totalParts[i].pos.y = -totalParts[i].pos.y*elastic;
-				}
 				if (totalParts[i].pos.x <= -5 || totalParts[i].pos.x >= 5) {
-					totalParts[i].pos.x -= totalParts[i].pos.x - totalParts[i].antPos.x;
-				}
-				if (totalParts[i].pos.z <= -5 || totalParts[i].pos.z >= 5) {
-					totalParts[i].pos.z -= totalParts[i].pos.z - totalParts[i].antPos.z;
+					
+						totalParts[i].pos.x -= (totalParts[i].pos.x - temp.x)*elastic;
+						temp.x += (temp.x - totalParts[i].antPos.x);			
 				}
 
-				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad <= 0) {
+				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad -0.025 <= 0) {
 					totalParts[i].pos.y = -totalParts[i].pos.y*elastic;
-					totalParts[i].pos.x = -totalParts[i].pos.x*elastic;
-					totalParts[i].pos.z = -totalParts[i].pos.z*elastic;
+					totalParts[i].pos.x -= (totalParts[i].pos.x - totalParts[i].antPos.x)*elastic;
+					totalParts[i].pos.z -= (totalParts[i].pos.z - totalParts[i].antPos.z)*elastic;
+					
+					
 				}
 				totalParts[i].antPos = temp;
 
@@ -483,9 +484,10 @@ void PhysicsUpdate(float dt) {
 				partVerts[i * 3 + 1] = totalParts[i].pos.y;
 				partVerts[i * 3 + 2] = totalParts[i].pos.z;
 			}
+			part += 10;
+			LilSpheres::updateParticles(0, part, partVerts);
 		}
-		part += 10;
-		LilSpheres::updateParticles(0, emm, partVerts);
+		
 	}
 	}
 	

@@ -359,24 +359,25 @@ void PhysicsUpdate(float dt) {
 						totalParts[i].lifetime = life;					
 				}
 
-				for (int i = 0; i < part; ++i) {
+				
+			}
+			for (int i = 0; i < part; ++i) {
 
-					glm::vec3 temp = totalParts[i].pos;
-
-
-					totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (fx/mass)*(dt*dt);
-					totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (fy / mass)*(dt*dt);
-					totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (fz / mass)*(dt*dt);
-
-					
-					
-					totalParts[i].antPos = temp;
+				glm::vec3 temp = totalParts[i].pos;
 
 
-					partVerts[i * 3 + 0] = totalParts[i].pos.x;
-					partVerts[i * 3 + 1] = totalParts[i].pos.y;
-					partVerts[i * 3 + 2] = totalParts[i].pos.z;
-				}
+				totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (fx / mass)*(dt*dt);
+				totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (fy / mass)*(dt*dt);
+				totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (fz / mass)*(dt*dt);
+
+
+
+				totalParts[i].antPos = temp;
+
+
+				partVerts[i * 3 + 0] = totalParts[i].pos.x;
+				partVerts[i * 3 + 1] = totalParts[i].pos.y;
+				partVerts[i * 3 + 2] = totalParts[i].pos.z;
 			}
 		}
 		part += 10;

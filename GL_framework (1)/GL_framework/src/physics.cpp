@@ -395,8 +395,9 @@ void PhysicsUpdate(float dt) {
 					totalParts[i].velocity.x = ((float)rand() / RAND_MAX) *-2 - 0.25;
 					totalParts[i].velocity.y = ((float)rand() / RAND_MAX);
 					totalParts[i].velocity.z = 0;
-					totalParts[i].Forces.x = -0.2;
-					totalParts[i].Forces.y = -9.81;
+
+					totalParts[i].Forces.x = ((float)rand() / RAND_MAX) *-2 - 0.25;
+					totalParts[i].Forces.y = ((float)rand() / RAND_MAX)*-9.81 -8;
 					totalParts[i].Forces.z = -0.2;
 
 					totalParts[i].lifetime = life;
@@ -407,9 +408,9 @@ void PhysicsUpdate(float dt) {
 				glm::vec3 temp = totalParts[i].pos;
 
 
-				totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (fx / mass)*(dt*dt);
-				totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (gravity)*(dt*dt);
-				totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (fz / mass)*(dt*dt);
+				totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (totalParts[i].Forces.x / mass)*(dt*dt);
+				totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (totalParts[i].Forces.y/mass)*(dt*dt);
+				totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (totalParts[i].Forces.z / mass)*(dt*dt);
 
 				totalParts[i].antPos = temp;
 

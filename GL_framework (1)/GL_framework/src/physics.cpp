@@ -304,8 +304,9 @@ void PhysicsUpdate(float dt) {
 
 				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad <= 0) {
 					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
-					totalParts[i].velocity.x += totalParts[i].velocity.x;
-					totalParts[i].velocity.z += totalParts[i].velocity.z;
+					
+					totalParts[i].velocity.x = -totalParts[i].velocity.x;
+					totalParts[i].velocity.z = -totalParts[i].velocity.z;
 				}
 			}
 			/*for (int i = part; i < LilSpheres::maxParticles; ++i) {

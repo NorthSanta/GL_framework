@@ -17,8 +17,13 @@ int fontOrWaterfall;
 int changedFont;
 int changedSolver;
 const float gravity = -9.81;
- float accX = 0;
- float accZ = 0;
+float accX = 0;
+float accZ = 0;
+
+float fx = 0;
+float fy = -1;
+float fz = 0;
+float mass = 1;
 
 int var1;
 int var2;
@@ -340,32 +345,28 @@ void PhysicsUpdate(float dt) {
 			for (int i = 0; i < part; ++i) {
 				totalParts[i].lifetime -= dt;
 				if (totalParts[i].lifetime <= 0) {
-					
 						totalParts[i].pos.x = 0;
 						totalParts[i].pos.y = 2;
 						totalParts[i].pos.z = 0;
 						partVerts[i * 3 + 0] = totalParts[i].pos.x;
 						partVerts[i * 3 + 1] = totalParts[i].pos.y;
 						partVerts[i * 3 + 2] = totalParts[i].pos.z;
-
+						totalParts[i].antPos = glm::vec3(totalParts[i].pos.x, totalParts[i].pos.y - 0.1, totalParts[i].pos.z);
 						totalParts[i].velocity.x = ((float)rand() / RAND_MAX) * 5 - 2.5f;
-						totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5+6;
+						totalParts[i].velocity.y = ((float)rand() / RAND_MAX) * 5 + 6;
 						totalParts[i].velocity.z = ((float)rand() / RAND_MAX) * 5 - 2.5f;
 
-						totalParts[i].lifetime = life;
-
-						totalParts[i].antPos = glm::vec3(totalParts[i].pos.x, totalParts[i].pos.y - 0.1, totalParts[i].pos.z);
-
-						
-					
+						totalParts[i].lifetime = life;					
 				}
 
 				for (int i = 0; i < part; ++i) {
 
 					glm::vec3 temp = totalParts[i].pos;
-					totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x);
-					totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y)+ (gravity* (dt*dt));
-					totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z);
+
+
+					totalParts[i].pos.x = totalParts[i].pos.x + (totalParts[i].pos.x - totalParts[i].antPos.x) + (fx/mass)*(dt*dt);
+					totalParts[i].pos.y = totalParts[i].pos.y + (totalParts[i].pos.y - totalParts[i].antPos.y) + (fy / mass)*(dt*dt);
+					totalParts[i].pos.z = totalParts[i].pos.z + (totalParts[i].pos.z - totalParts[i].antPos.z) + (fz / mass)*(dt*dt);
 
 					
 					
@@ -378,7 +379,7 @@ void PhysicsUpdate(float dt) {
 				}
 			}
 		}
-		
+		part += 10;
 		LilSpheres::updateParticles(0, part, partVerts);
 	}
 }

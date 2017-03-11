@@ -331,12 +331,13 @@ void PhysicsUpdate(float dt) {
 			for (int i = 0; i < part; ++i) {
 
 
-				totalParts[i].pos.x += (dt * totalParts[i].velocity.x) + (0.5 * (gravity * (dt * dt)));
+				totalParts[i].pos.x += (dt * totalParts[i].velocity.x) ;
 				totalParts[i].velocity.x += (accX*dt);
-				totalParts[i].pos.y += (dt * totalParts[i].velocity.y) + (0.5 * (gravity * (dt * dt)));
-				totalParts[i].velocity.y += (gravity*dt);
-				
-				totalParts[i].pos.z += (dt * totalParts[i].velocity.z) + (0.5 * (gravity * (dt * dt)));
+				totalParts[i].pos.y += (dt * totalParts[i].velocity.y);
+				if (totalParts[i].pos.y >= 0.025) {
+					totalParts[i].velocity.y += (gravity*dt);
+				}
+				totalParts[i].pos.z += (dt * totalParts[i].velocity.z);
 				totalParts[i].velocity.z += (accZ*dt);
 				partVerts[i * 3 + 0] = totalParts[i].pos.x;
 				partVerts[i * 3 + 1] = totalParts[i].pos.y;
@@ -345,16 +346,18 @@ void PhysicsUpdate(float dt) {
 				if (totalParts[i].pos.y <= 0.025) {
 					
 					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
-
-					//totalParts[i].velocity.x += totalParts[i].velocity.x;
-					//totalParts[i].velocity.z += totalParts[i].velocity.z;
+				}
+				if (totalParts[i].pos.x <= -5 || totalParts[i].pos.x >= 5) {
+					totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;
+				}
+				if (totalParts[i].pos.z <= -5 || totalParts[i].pos.z >= 5) {
+					totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;
 				}
 				if (glm::distance(glm::vec3(sphereX, sphereY, sphereZ), totalParts[i].pos) - sphereRad <= 0) {
 					
 					totalParts[i].velocity.y = -totalParts[i].velocity.y*elastic;
-
-					totalParts[i].velocity.x = -totalParts[i].velocity.x;
-					totalParts[i].velocity.z = -totalParts[i].velocity.z;
+					totalParts[i].velocity.x = -totalParts[i].velocity.x*elastic;;
+					totalParts[i].velocity.z = -totalParts[i].velocity.z*elastic;;
 				}
 
 
